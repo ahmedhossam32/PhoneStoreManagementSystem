@@ -1,0 +1,22 @@
+# Build and output folders
+build/
+dist/
+
+# NetBeans IDE private settings
+nbproject/private/
+
+# Compiled class files
+*.class
+
+# IDE-specific files
+*.iml
+*.ipr
+*.iws
+
+# System-specific files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
