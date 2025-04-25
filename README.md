@@ -8,7 +8,7 @@ A Java-based phone store management system built with:
 
 ---
 
- Features
+## Features
 🔑 User login and signup system
 📱 Browse available phones and place orders
 💵 Payment system (Cash or Visa) using the Strategy Pattern
@@ -48,7 +48,7 @@ Notify waiting clients automatically when a phone is added (Observer Pattern)
 🔁 State Pattern for handling order status (Pending, Confirmed, Shipped, Delivered, Cancelled)
 🧩 Singleton Pattern for managing the Phone Store as a single instance
 
-📐 Design Patterns Used
+## Design Patterns Used
 Your project applies core design patterns to separate concerns and enhance maintainability.
 
 🔁 Strategy Pattern – Flexible Payment Methods
