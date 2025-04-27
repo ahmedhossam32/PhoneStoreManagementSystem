@@ -1,14 +1,12 @@
 package GUI;
-import Database.*;
 import MainClasses.*;
+import Controllers.*;
 import DesignPatterns.*;
 import javax.swing.JOptionPane;
 
 public class ManageOrder extends javax.swing.JFrame {
+private ManageOrderController manageOrderController = new ManageOrderController();
 
-    private PhoneDAO phoneDAO = new PhoneDAO();
-    private OrderDAO orderDAO = new OrderDAO();
-    private PaymentService paymentService = new PaymentService();
     private Order currentOrder;
     private Client client; 
 
@@ -32,7 +30,7 @@ public class ManageOrder extends javax.swing.JFrame {
     }
 
     
-    currentOrder = orderDAO.getOrderById(orderId);
+currentOrder = manageOrderController.getOrderById(orderId);
 
     if (currentOrder == null) {
         JOptionPane.showMessageDialog(this, "❌ No order found with ID: " + orderId);
@@ -54,8 +52,9 @@ public class ManageOrder extends javax.swing.JFrame {
     }
 
     String selectedPhoneName = (String) jComboBox1.getSelectedItem();
-    Phone updatedPhone = phoneDAO.getPhoneByModelName(selectedPhoneName);
+    Phone updatedPhone = manageOrderController.getPhoneByModelName(selectedPhoneName);
 
+    
     int newQuantity = Integer.parseInt((String) jComboBox2.getSelectedItem());
     String newPaymentMethod = (String) jComboBox3.getSelectedItem();
 
@@ -290,7 +289,7 @@ public class ManageOrder extends javax.swing.JFrame {
         return;
     }
 
-    orderDAO.cancelOrder(currentOrder.getOrderID());
+manageOrderController.cancelOrder(currentOrder.getOrderID());
     JOptionPane.showMessageDialog(this, "❌ Order #" + currentOrder.getOrderID() + " has been cancelled.");
     new ClientDashboard(client).setVisible(true);
     this.dispose();
@@ -305,7 +304,7 @@ public class ManageOrder extends javax.swing.JFrame {
         return;
     }
 
-    boolean success = orderDAO.updateOrder(currentOrder); 
+boolean success = manageOrderController.updateOrder(currentOrder);
     if (success) {
         JOptionPane.showMessageDialog(this, "✅ Order modified successfully!");
     } else {

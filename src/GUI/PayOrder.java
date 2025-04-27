@@ -1,5 +1,5 @@
 package GUI;
-import Database.*;
+import Controllers.*;
 import MainClasses.*;
 import javax.swing.JOptionPane;
 import java.awt.Color;
@@ -9,8 +9,7 @@ public class PayOrder extends javax.swing.JFrame {
 
     private Order currentOrder;
     private Client client;
-    private PaymentService paymentService = new PaymentService();
-    private OrderDAO orderDAO = new OrderDAO();
+    PayOrderController payOrderController;
 
     public PayOrder(Client client,Order order) {
         this.client=client;
@@ -29,7 +28,7 @@ public class PayOrder extends javax.swing.JFrame {
         initComponents();
     }
     
-      private void checkOrderById() {
+    private void checkOrderById() {
     int orderId;
 
     try {
@@ -39,32 +38,35 @@ public class PayOrder extends javax.swing.JFrame {
         return;
     }
 
-    currentOrder = orderDAO.getOrderById(orderId);
+    currentOrder = payOrderController.getOrderById(orderId);
 
     if (currentOrder == null || currentOrder.getClient().getClientID() != client.getClientID()) {
         JOptionPane.showMessageDialog(this, "❌ Order not found or doesn't belong to you.");
         return;
     }
-jLabel4.setForeground(Color.WHITE);
-jLabel4.setText(currentOrder.getPhone().getBrand());
 
-jLabel5.setForeground(Color.WHITE);
-jLabel5.setText(currentOrder.getPhone().getModelName());
+    jLabel4.setForeground(Color.WHITE);
+    jLabel4.setText(currentOrder.getPhone().getBrand());
 
-jLabel6.setForeground(Color.WHITE);
-jLabel6.setText(String.valueOf(currentOrder.getQuantity()));
+    jLabel5.setForeground(Color.WHITE);
+    jLabel5.setText(currentOrder.getPhone().getModelName());
 
-jLabel10.setForeground(Color.WHITE);
-jLabel10.setText(String.valueOf(currentOrder.calculateTotalPrice()));}
+    jLabel6.setForeground(Color.WHITE);
+    jLabel6.setText(String.valueOf(currentOrder.getQuantity()));
+
+    jLabel10.setForeground(Color.WHITE);
+    jLabel10.setText(String.valueOf(currentOrder.calculateTotalPrice()));
+}
+
       
-      private void payWithCash() {
+    private void payWithCash() {
     if (currentOrder == null) {
         JOptionPane.showMessageDialog(this, "❌ Please load your order first.");
         return;
     }
 
     PaymentStrategy strategy = new CashPayment();
-    paymentService.pay(client, currentOrder, strategy);
+    payOrderController.payOrder(client, currentOrder, strategy);
 
     JOptionPane.showMessageDialog(this,
         "💵 Please pay " + currentOrder.calculateTotalPrice() + " in cash at the store.\n" +
@@ -73,6 +75,7 @@ jLabel10.setText(String.valueOf(currentOrder.calculateTotalPrice()));}
     new ClientDashboard(client).setVisible(true);
     this.dispose();
 }
+
       
       private void redirectToVisaForm() {
     if (currentOrder == null) {

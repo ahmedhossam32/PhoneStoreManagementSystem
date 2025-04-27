@@ -243,6 +243,16 @@ public Order getOrderById(int orderID) {
         return false;
     }
 }
+   public void markOrderAsNotified(int orderId) {
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement("UPDATE orders SET status_notified = TRUE WHERE order_id = ?")) {
+        stmt.setInt(1, orderId);
+        stmt.executeUpdate();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
 
 
 

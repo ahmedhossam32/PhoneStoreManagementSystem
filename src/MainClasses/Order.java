@@ -14,6 +14,8 @@ public class Order {
     private LocalDateTime orderDate;
     private Payment payment;
     private Observer observer;
+    private boolean statusNotified;
+
     
 public Order(Phone phone, Client client, int quantity, LocalDateTime orderDate) {
     this.phone = phone;
@@ -23,11 +25,22 @@ public Order(Phone phone, Client client, int quantity, LocalDateTime orderDate) 
     this.orderstatus = new PendingState(); 
     this.observer = client;
     this.orderID = 0; 
+    this.statusNotified = false;
+
 }
 
 public Order(int orderID, Phone phone, Client client, int quantity, LocalDateTime orderDate) {
     this(phone, client, quantity, orderDate); 
     this.orderID = orderID; 
+    this.statusNotified = false;
+
+}
+public void setStatusNotified(boolean statusNotified) {
+    this.statusNotified = statusNotified;
+}
+
+public boolean isStatusNotified() {
+    return statusNotified;
 }
 
     public OrderStatus getStatus() {

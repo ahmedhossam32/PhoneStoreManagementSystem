@@ -2,6 +2,10 @@ package GUI;
 import Database.*;
 import MainClasses.*;
 import javax.swing.JOptionPane;
+import Controllers.PlaceOrderController;
+import java.util.List;
+
+
 
 
 public class PlaceYourOrder extends javax.swing.JFrame {
@@ -11,6 +15,8 @@ public class PlaceYourOrder extends javax.swing.JFrame {
     private OrderManager orderManager = new OrderManager();
     private Phone phone;
     public double price;
+    private PlaceOrderController placeOrderController = new PlaceOrderController();
+
 
     
     public PlaceYourOrder(Client client) {
@@ -26,26 +32,22 @@ public class PlaceYourOrder extends javax.swing.JFrame {
      
      
      
-    private void putphones() {
-      java.util.List<Phone> phones = phoneDAO.getAllPhones(); 
-      jComboBox1.removeAllItems();
-      
-      for (Phone phone : phoneDAO.getAllPhones()) {
-        jComboBox1.addItem (phone.getModelName());     
-
+   private void putphones() {
+    List<String> models = placeOrderController.getAllPhoneModels();
+    jComboBox1.removeAllItems();
+    for (String model : models) {
+        jComboBox1.addItem(model);
     }
-     }
-    
-     
-     public void checkprice()
-     {
-         String selectedModelName = (String) jComboBox1.getSelectedItem();
-         phone = phoneDAO.getPhoneByModelName(selectedModelName);
-         price=phone.getPrice();
-         jLabel6.setText(String.valueOf(phone.getPrice())+ " $");
-         jLabel13.setText(phone.getBrand());
-         
-     }
+}
+
+     public void checkprice() {
+    String selectedModelName = (String) jComboBox1.getSelectedItem();
+    phone = placeOrderController.getPhoneByModelName(selectedModelName);
+    price = phone.getPrice();
+    jLabel6.setText(String.valueOf(price) + " $");
+    jLabel13.setText(phone.getBrand());
+}
+
 
 
   
@@ -237,17 +239,14 @@ public class PlaceYourOrder extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-    String selectedMethod = (String) jComboBox3.getSelectedItem(); // Assuming this is your payment dropdown
-
+    String selectedMethod = (String) jComboBox3.getSelectedItem();
     int quantity = Integer.parseInt((String) jComboBox2.getSelectedItem());
 
     if (phone == null) {
         JOptionPane.showMessageDialog(this, "Please select a phone to order.");
         return;
     }
-
-   
-    Order order = orderManager.createOrder(client, phone, quantity,selectedMethod);
+    Order order = placeOrderController.createOrder(client, phone, quantity, selectedMethod);
 
     if (order == null) {
         JOptionPane.showMessageDialog(this, "❌ Failed to create order.");
@@ -274,15 +273,12 @@ public class PlaceYourOrder extends javax.swing.JFrame {
         new ClientDashboard(client).setVisible(true);
         this.dispose();
     }
-
-
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
- int quantity = Integer.parseInt((String) jComboBox2.getSelectedItem());
-double total = price * quantity;
-jLabel8.setText(String.format("$%.2f", total));
-
+    int quantity = Integer.parseInt((String) jComboBox2.getSelectedItem());
+    double total = placeOrderController.calculateTotalPrice(phone, quantity);
+    jLabel8.setText(String.format("$%.2f", total));
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed

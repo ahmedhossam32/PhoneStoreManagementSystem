@@ -1,5 +1,6 @@
 package GUI;
 import MainClasses.*;
+import Controllers.*;
 import javax.swing.JOptionPane;
 import DesignPatterns.*;
 
@@ -7,7 +8,8 @@ public class Visapayment extends javax.swing.JFrame {
 
 private Client client;
 private Order order;
-private PaymentService paymentService = new PaymentService();
+private PayOrderController payOrderController = new PayOrderController();
+
 
 public Visapayment(Client client, Order order) {
     this.client = client;
@@ -29,13 +31,16 @@ private void submitVisaPayment() {
     }
 
     PaymentStrategy visa = new VisaPayment(cardNumber, cardHolder, cvv);
-    paymentService.pay(client, order, visa);
+    
+    // Instead of paymentService.pay(...)
+    payOrderController.payOrder(client, order, visa);
 
     JOptionPane.showMessageDialog(this, "✅ Payment completed successfully!");
 
     new ClientDashboard(client).setVisible(true);
     this.dispose();
 }
+
 
 
 

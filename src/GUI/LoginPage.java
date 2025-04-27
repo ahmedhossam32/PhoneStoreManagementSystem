@@ -1,48 +1,41 @@
 package GUI;
-import Database.*;
+import Controllers.*;
 import MainClasses.*;
 
 import javax.swing.JOptionPane;
 
 public class LoginPage extends javax.swing.JFrame {
-    private ClientDAO clientDAO = new ClientDAO();
-    private AdminDAO adminDAO = new AdminDAO();
+    LoginController loginController = new LoginController();
 
     
     public LoginPage() {
         initComponents();
     }
     
-    private void loginAction() {
+
+private void loginAction() {
     String email = jTextField1.getText().trim();
     String password = new String(jPasswordField1.getPassword());
 
-    if (email.isEmpty() || password.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Please enter both email and password.", "Missing Info", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
+    Object result = loginController.login(email, password);
 
-    Client client = clientDAO.getClientByUsernameAndPassword(email, password);
-    if (client != null) {
-        JOptionPane.showMessageDialog(this, " Client login successful!" + " Welocme " + client.getName());
-         
+    if (result.equals("MissingFields")) {
+        JOptionPane.showMessageDialog(this, "Please enter both email and password.", "Missing Info", JOptionPane.WARNING_MESSAGE);
+    } else if (result.equals("InvalidCredentials")) {
+        JOptionPane.showMessageDialog(this, "Invalid email or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
+    } else if (result instanceof Client) {
+        Client client = (Client) result;
+        JOptionPane.showMessageDialog(this, "Client login successful! Welcome " + client.getName());
         new ClientDashboard(client).setVisible(true);
         this.dispose();
-        
-        return;
-    }
-
-    Admin admin = adminDAO.getAdminByUsernameAndPassword(email, password);
-    if (admin != null) {
-        JOptionPane.showMessageDialog(this, "Admin login successful!" + " Welcome " + admin.getName() );
-       /*
+    } else if (result instanceof Admin) {
+        Admin admin = (Admin) result;
+        JOptionPane.showMessageDialog(this, "Admin login successful! Welcome " + admin.getName());
+        // You can redirect admin to admin dashboard later if you want
         this.dispose();
-        */
-        return;
     }
-
-    JOptionPane.showMessageDialog(this, "Invalid email or password.", "Login Failed", JOptionPane.ERROR_MESSAGE);
 }
+
 
    
     @SuppressWarnings("unchecked")

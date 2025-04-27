@@ -1,15 +1,15 @@
 package GUI;
 import Database.*;
 import MainClasses.*;
-import java.util.ArrayList;
-import java.util.List;
+import Controllers.*;
+import java.util.*;
 
 
 public class OrderHistory extends javax.swing.JFrame {
    Client client;
    ClientDAO clientDAO=new ClientDAO();
-   private OrderDAO orderDAO = new OrderDAO();
-   private List<Order> clientOrders = new ArrayList<>();
+ private OrderHistoryController orderHistoryController = new OrderHistoryController();
+
 
    
     public OrderHistory() {
@@ -25,14 +25,15 @@ public class OrderHistory extends javax.swing.JFrame {
      
     }
     
-    private void loadOrdersIntoComboBox() {
-    clientOrders = orderDAO.getOrdersByClientId(client.getClientID());
+   private void loadOrdersIntoComboBox() {
+    List<Order> clientOrders = orderHistoryController.getOrdersByClientId(client.getClientID());
     jComboBox1.removeAllItems();
     for (Order order : clientOrders) {
-        
-        jComboBox1.addItem("Order of " + " " + order.getPhone().getModelName());
+        jComboBox1.addItem("Order of " + order.getPhone().getModelName());
     }
 }
+
+
 
     private void fillOrderDetails(Order selectedOrder) {
     orderidlabel.setText(String.valueOf(selectedOrder.getOrderID()));
@@ -243,11 +244,14 @@ public class OrderHistory extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+    List<Order> clientOrders = orderHistoryController.getOrdersByClientId(client.getClientID());
     int selectedIndex = jComboBox1.getSelectedIndex();
     if (selectedIndex >= 0 && selectedIndex < clientOrders.size()) {
         Order selectedOrder = clientOrders.get(selectedIndex);
         fillOrderDetails(selectedOrder);
     }
+
+
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed

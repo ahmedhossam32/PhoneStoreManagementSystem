@@ -1,11 +1,11 @@
 package GUI;
 import MainClasses.*;
-import java.util.List;
+import Controllers.*;
 import javax.swing.JOptionPane;
 
 
 public class RequestPhoneGU extends javax.swing.JFrame {
-
+    RequestPhoneController requestPhoneController;
     Client client;
     public RequestPhoneGU(Client client) {
         this.client=client;
@@ -140,28 +140,16 @@ public class RequestPhoneGU extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-    String modelName = jTextField1.getText().trim();
+       String modelName = jTextField1.getText().trim();
 
     if (modelName.isEmpty()) {
         JOptionPane.showMessageDialog(this, "❌ Please enter a valid phone model.");
         return;
     }
 
-    PhoneStore phoneStore = PhoneStore.getInstance();
-    List<Phone> allPhones = phoneStore.getAllPhones();
+    boolean available = requestPhoneController.isPhoneAvailable(modelName);
 
-    boolean found = false;
-    Phone matchedPhone = null;
-
-    for (Phone phone : allPhones) {
-        if (PhoneStore.isSameModel(phone.getModelName(), modelName)) {
-            found = true;
-            matchedPhone = phone;
-            break;
-        }
-    }
-
-    if (found) {
+    if (available) {
         int choice = JOptionPane.showOptionDialog(
             this,
             "✅ This phone model is already available!\nWould you like to place an order now?",
@@ -181,7 +169,7 @@ public class RequestPhoneGU extends javax.swing.JFrame {
 
         this.dispose();
     } else {
-        phoneStore.requestPhone(client, modelName);
+        requestPhoneController.requestPhone(client, modelName);
 
         JOptionPane.showMessageDialog(this,
             "❌ This phone is currently unavailable.\n" +

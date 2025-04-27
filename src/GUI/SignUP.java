@@ -1,50 +1,41 @@
 package GUI;
-import Database.*;
-import MainClasses.*;
 import javax.swing.JOptionPane;
-
+import Controllers.*;
 
 public class SignUP extends javax.swing.JFrame {
-    private ClientDAO clientDAO = new ClientDAO();
-    
     
     
     public SignUP() {
         initComponents();
     }
     
-    private void signup()
-    {
-        String name=jTextField7.getText().trim();
-        String password=new String(jPasswordField1.getPassword());
-        String email =jTextField8.getText().trim();
-        String username= jTextField3.getText().trim();
-        
-        Client client=clientDAO.getClientByUsername(username);
-        
-     if (client != null) {
-        JOptionPane.showMessageDialog(this, " Client with username "+ client.getUsername() + 
-                " already exsist try another one ");  
-       
-       }
-     else
-     {
-         Client newclient=new Client(username,password,name,email,PhoneStore.getInstance());
-         clientDAO.addClient(newclient);
-          JOptionPane.showMessageDialog(this,"Account created successfully! " +
-             "Redirecting you to login page ");
-          
-           new LoginPage().setVisible(true);
-           this.dispose();
-    
+ SignupController signupController = new SignupController();
 
-     }
+private void signup() {
+    String name = jTextField7.getText().trim();
+    String email = jTextField8.getText().trim();
+    String username = jTextField3.getText().trim();
+    String password = new String(jPasswordField1.getPassword());
 
-        
-        
-        
-        
+    String result = signupController.signup(name, email, username, password);
+
+    switch (result) {
+        case "MissingFields":
+            JOptionPane.showMessageDialog(this, "Please fill all the fields.", "Missing Info", JOptionPane.WARNING_MESSAGE);
+            break;
+        case "UsernameTaken":
+            JOptionPane.showMessageDialog(this, "Username already exists. Please choose another one.", "Username Taken", JOptionPane.ERROR_MESSAGE);
+            break;
+        case "Success":
+            JOptionPane.showMessageDialog(this, "Account created successfully! Redirecting to login page.");
+            new LoginPage().setVisible(true);
+            this.dispose();
+            break;
+        default:
+            JOptionPane.showMessageDialog(this, "Unexpected error during signup.", "Error", JOptionPane.ERROR_MESSAGE);
     }
+}
+
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
